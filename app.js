@@ -22,7 +22,15 @@ mongoose.connect(MONGOBD_URL, {
   useFindAndModify: false,
   useUnifiedTopology: true,
 });
-app.use(cors());
+const allowedCors = [
+  'https://api.explmovie.bystudent.nomoredomains.rocks',
+  'https://exploremovie.bystudent.nomoredomains.rocks',
+  'http://localhost:4000',
+];
+
+app.use(cors({
+  origin: allowedCors,
+}));
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
