@@ -23,8 +23,8 @@ mongoose.connect(MONGOBD_URL, {
   useUnifiedTopology: true,
 });
 const allowedCors = [
-  'https://api.explmovie.bystudent.nomoredomains.rocks',
-  'https://exploremovie.bystudent.nomoredomains.rocks',
+  'https://api.movies.bystudent.nomoredomains.club',
+  'https://movies.bystudent.nomoredomains.club',
   'http://localhost:4000',
 ];
 
