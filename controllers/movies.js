@@ -52,11 +52,11 @@ const postMovie = (req, res, next) => {
 
 const deleteMovie = (req, res, next) => {
   const id = req.user._id;
-  Movie.findById(req.params.id)
+  Movie.findById(req.params.movieId)
     .then((movie) => {
       if (movie) {
         if (movie.owner.toString() === id) {
-          Movie.findByIdAndRemove(req.params.id)
+          Movie.findByIdAndRemove(req.params.movieId)
             .then((deletedMovie) => res.send(deletedMovie))
             .catch(next);
         } else {

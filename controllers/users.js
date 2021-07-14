@@ -23,7 +23,7 @@ const updateUser = (req, res, next) => {
   const newEmail = req.body.email;
   User.findByIdAndUpdate(
     { _id: id },
-    { name: newName, about: newEmail },
+    { name: newName, email: newEmail },
     { runValidators: true, new: true },
   )
     .then((user) => {
@@ -35,9 +35,12 @@ const updateUser = (req, res, next) => {
     .catch((err) => {
       if (err.name === 'CastError') {
         next(new BadRequestError('Ошибка запроса обновления информации пользователя'));
-      } else next(err);
-    })
-    .catch(next);
+      }
+      if (err.code === 11000) {
+        next(new ConflictError('Пользователь с таким email адресом уже существует'));
+      }
+      next(err);
+    });
 };
 
 const createUser = (req, res, next) => {
@@ -46,7 +49,6 @@ const createUser = (req, res, next) => {
     email,
     password,
   } = req.body;
-  if (!email || !password) throw new BadRequestError('Ошибка запроса создания пользователя');
   User.findOne({ email })
     .then((user) => {
       if (user) throw new ConflictError('Пользователь с таким email уже существует');
