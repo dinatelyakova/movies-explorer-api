@@ -44,7 +44,7 @@ const postMovie = (req, res, next) => {
     .then((movie) => res.send(movie))
     .catch((err) => {
       if (err.name === 'ValidationError') {
-        next(new BadRequestError('Ошибка запроса создания фильма'));
+        next(new BadRequestError('Ошибка запроса сохранения фильма'));
       }
       next(err);
     });
@@ -54,7 +54,7 @@ const deleteMovie = (req, res, next) => {
   const { movieId } = req.params;
   const owner = req.user._id;
   Movie.findById(movieId)
-    .orFail(() => { throw new NotFoundError('Запрашиваемый ресурс не найден'); })
+    .orFail(() => { throw new NotFoundError('Фильм с таким id не найден'); })
     .then((movie) => {
       if (movie.owner.toString() !== owner) {
         throw new ForbiddenError('Вы не можете удалить чужой фильм');
