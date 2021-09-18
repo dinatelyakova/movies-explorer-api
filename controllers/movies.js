@@ -51,21 +51,17 @@ const postMovie = (req, res, next) => {
 };
 
 const deleteMovie = (req, res, next) => {
-  const id = req.user._id;
-  Movie.findById(req.params.movieId)
+  const { movieId } = req.params;
+  const owner = req.user._id;
+  Movie.findById(movieId)
+    .orFail(() => { throw new NotFoundError('Запрашиваемый ресурс не найден'); })
     .then((movie) => {
-      if (movie) {
-        if (movie.owner.toString() === id) {
-          Movie.findByIdAndRemove(req.params.movieId)
-            .then((deletedMovie) => res.send(deletedMovie))
-            .catch(next);
-        } else {
-          throw new ForbiddenError('Нет прав на удаление чужой карточки фильма');
-        }
-      } else {
-        throw new NotFoundError('Карточка не найдена');
+      if (movie.owner.toString() !== owner) {
+        throw new ForbiddenError('Вы не можете удалить чужой фильм');
       }
+      return Movie.findByIdAndRemove(movieId);
     })
+    .then((movie) => res.send(movie))
     .catch(next);
 };
 
